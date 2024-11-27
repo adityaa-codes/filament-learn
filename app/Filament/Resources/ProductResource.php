@@ -40,6 +40,9 @@ class ProductResource extends Resource
                 }),
                 Tables\Columns\TextColumn::make('category.name')->label('Category'),
                 Tables\Columns\TextColumn::make('tags.name')->badge(),
+                Tables\Columns\ToggleColumn::make('is_active'),
+
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->since(),
 
