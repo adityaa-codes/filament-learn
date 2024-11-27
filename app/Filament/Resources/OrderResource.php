@@ -16,7 +16,12 @@ class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return Order::whereDate('created_at', today())->count() ? 'NEW' : '';
+    }
 
     public static function table(Table $table): Table
     {
@@ -48,7 +53,7 @@ class OrderResource extends Resource
             ])
             ->headerActions([
                 Tables\Actions\Action::make('New Order')
-                    ->url(fn (): string => OrderResource::getUrl('create')),
+                    ->url(fn(): string => OrderResource::getUrl('create')),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
@@ -78,7 +83,7 @@ class OrderResource extends Resource
                     Tables\Actions\BulkAction::make('Mark as Completed')
                         ->icon('heroicon-o-check-badge')
                         ->requiresConfirmation()
-                        ->action(fn (Collection $records) => $records->each->update(['is_completed' => true]))
+                        ->action(fn(Collection $records) => $records->each->update(['is_completed' => true]))
                         ->deselectRecordsAfterCompletion()
                 ]),
             ])->defaultSort('created_at', 'desc')
