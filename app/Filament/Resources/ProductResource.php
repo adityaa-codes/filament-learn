@@ -30,7 +30,10 @@ class ProductResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('price')->sortable(),
+                Tables\Columns\TextColumn::make('price')->sortable()
+                    ->money('inr')->getStateUsing(function (Product $record) {
+                    return $record->price / 100;
+                }),
             ])->defaultSort('price','desc')
             ->filters([
                 //
