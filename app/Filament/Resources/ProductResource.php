@@ -6,7 +6,6 @@ use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers\TagsRelationManager;
 use App\Models\Product;
 use Filament\Forms;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -33,10 +32,16 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('price')->sortable()
                     ->money('inr')->getStateUsing(function (Product $record) {
                         return $record->price / 100;
-                    }),
-                Tables\Columns\TextColumn::make('status'),
-                Tables\Columns\TextColumn::make('category.name'),
-                Tables\Columns\TextColumn::make('tags.name'),
+                    })->alignCenter(),
+                Tables\Columns\TextColumn::make('status')->badge()->color(fn(string $state): string => match ($state) {
+                    'in stock' => 'primary',
+                    'sold out' => 'danger',
+                    'coming soon' => 'info',
+                }),
+                Tables\Columns\TextColumn::make('category.name')->label('Category'),
+                Tables\Columns\TextColumn::make('tags.name')->badge(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->since(),
 
 
             ])->defaultSort('price', 'desc')
@@ -54,7 +59,7 @@ class ProductResource extends Resource
                         return $query
                             ->when(
                                 $data['created_from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
                             );
                     }),
                 Tables\Filters\Filter::make('created_until')
@@ -65,7 +70,7 @@ class ProductResource extends Resource
                         return $query
                             ->when(
                                 $data['created_until'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
                             );
                     }),
             ], Tables\Enums\FiltersLayout::AboveContent)->filtersFormColumns(4)
