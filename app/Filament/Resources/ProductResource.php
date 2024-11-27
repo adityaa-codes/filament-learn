@@ -32,7 +32,6 @@ class ProductResource extends Resource
     protected static int $globalSearchResultsLimit = 3;
 
 
-
     public static function getGlobalSearchResultUrl(Model $record): string
     {
         return self::getUrl('view', ['record' => $record]);
@@ -129,7 +128,12 @@ class ProductResource extends Resource
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->required()
-                            ->unique(ignoreRecord: true),
+                            ->unique(ignoreRecord: true)
+                            ->live(onBlur: true)
+                            ->hiddenOn('edit')
+                            ->afterStateUpdated(fn(Forms\Set $set, ?string $state) => $set('slug', str()->slug($state))),
+                        Forms\Components\TextInput::make('slug')
+                            ->required(),
                         Forms\Components\TextInput::make('price')
                             ->required(),
                     ]),
