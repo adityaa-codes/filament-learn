@@ -92,16 +92,23 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')->required()->unique(ignoreRecord: true),
-                Forms\Components\TextInput::make('price')->required()->rules('numeric'),
-                Forms\Components\Radio::make('status')
-                    ->options(self::$statuses),
-                Forms\Components\Select::make('category_id')
-                    ->relationship('category', 'name'),
-                Forms\Components\Select::make('tags')
-                    ->relationship('tags', 'name')
-                    ->multiple()
-            ]);
+                Forms\Components\Section::make('Main data')
+                    ->description('What users totally need to fill in')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->required()
+                            ->unique(ignoreRecord: true),
+                        Forms\Components\TextInput::make('price')
+                            ->required(),
+                    ]),
+                Forms\Components\Section::make('Additional data')
+                    ->schema([
+                        Forms\Components\Radio::make('status')
+                            ->options(self::$statuses),
+                        Forms\Components\Select::make('category_id')
+                            ->relationship('category', 'name'),
+                    ]),
+            ]);;
     }
 
     public static function getRelations(): array
