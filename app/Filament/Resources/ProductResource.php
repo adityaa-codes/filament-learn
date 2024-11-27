@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class ProductResource extends Resource
 {
@@ -25,6 +26,22 @@ class ProductResource extends Resource
     protected static ?string $model = Product::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected static ?string $recordTitleAttribute = 'name';
+
+    protected static int $globalSearchResultsLimit = 3;
+
+
+
+    public static function getGlobalSearchResultUrl(Model $record): string
+    {
+        return self::getUrl('view', ['record' => $record]);
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name'];
+    }
 
     public static function infolist(Infolist $infolist): Infolist
     {
