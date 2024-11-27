@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
+use App\Filament\Resources\ProductResource\RelationManagers\TagsRelationManager;
 use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -30,6 +31,9 @@ class ProductResource extends Resource
                     ]),
                 Forms\Components\Select::make('category_id')
                     ->relationship('category', 'name'),
+                Forms\Components\Select::make('tags')
+                    ->relationship('tags', 'name')
+                    ->multiple()
             ]);
     }
 
@@ -44,6 +48,8 @@ class ProductResource extends Resource
                 }),
                 Tables\Columns\TextColumn::make('status'),
                 Tables\Columns\TextColumn::make('category.name'),
+                Tables\Columns\TextColumn::make('tags.name'),
+
 
 
             ])->defaultSort('price','desc')
@@ -65,7 +71,8 @@ class ProductResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            TagsRelationManager::class,
+
         ];
     }
 
