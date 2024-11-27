@@ -7,6 +7,8 @@ use App\Filament\Resources\ProductResource\RelationManagers\TagsRelationManager;
 use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -23,6 +25,18 @@ class ProductResource extends Resource
     protected static ?string $model = Product::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+
+                TextEntry::make('name'),
+                TextEntry::make('price'),
+                TextEntry::make('is_active'),
+                TextEntry::make('status'),
+            ]);
+    }
 
     public static function table(Table $table): Table
     {
@@ -78,6 +92,7 @@ class ProductResource extends Resource
                     }),
             ], Tables\Enums\FiltersLayout::AboveContent)->filtersFormColumns(4)
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
@@ -108,7 +123,7 @@ class ProductResource extends Resource
                         Forms\Components\Select::make('category_id')
                             ->relationship('category', 'name'),
                     ]),
-            ]);;
+            ]);
     }
 
     public static function getRelations(): array
@@ -125,6 +140,8 @@ class ProductResource extends Resource
             'index' => Pages\ListProducts::route('/'),
             'create' => Pages\CreateProduct::route('/create'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
+            'view' => Pages\ViewProduct::route('/{record}'),
+
         ];
     }
 }
